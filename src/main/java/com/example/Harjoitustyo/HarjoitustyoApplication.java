@@ -10,4 +10,8 @@ public class HarjoitustyoApplication {
 		SpringApplication.run(HarjoitustyoApplication.class, args);
 	}
 
+
+	//Testi
+
+	//fadjojdsalkfj
 }
