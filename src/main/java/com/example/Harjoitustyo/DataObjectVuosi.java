@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class DataObject {
+public class DataObjectVuosi {
     private String weekday;
     private int date;
 }

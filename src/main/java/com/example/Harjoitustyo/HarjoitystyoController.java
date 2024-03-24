@@ -4,29 +4,51 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.ui.Model;
 
-import java.io.Console;
 import java.util.Calendar;
-
-import javax.xml.crypto.Data;
+//import java.time.LocalDate;
+//import java.time.DayOfWeek;
+import java.time.*;
 
 @Controller
 public class HarjoitystyoController {
-    public DataObject[] luotaulukko() {
+    public DataObjectPaiva[] luotaulukko() {
         int paivat = 6*7;
-        DataObject[] taulukko = new DataObject[paivat];
+        DataObjectPaiva[] taulukko = new DataObjectPaiva[paivat];
 
-        String[] viikonpaivat = {"sunnuntai", "maanantai", "tiistai",
-                "keskiviikko", "torstai", "perjantai", "lauantai"};
+        LocalDate nykyinenPaivamaara = LocalDate.now();
 
-        int pvm = Calendar.getInstance().get(Calendar.DATE);
-        int viikonpaiva = Calendar.getInstance().get(Calendar.DAY_OF_WEEK)-1;
-        int kuukausi = Calendar.getInstance().get(Calendar.MONTH) + 1;
+        // Hanki kuukauden ensimmäinen päivä
+        LocalDate kuukaudenEnsimmainenPaiva = nykyinenPaivamaara.withDayOfMonth(1);
 
+        // Hanki viikonpäivä
+        DayOfWeek viikonpaiva = kuukaudenEnsimmainenPaiva.getDayOfWeek();
 
+        if (viikonpaiva.getValue() == 5){
+            System.out.println("toimii");
+        }
+
+        LocalDate jotain = nykyinenPaivamaara.withDayOfMonth(1).plusDays(40);
+        System.out.println(jotain);
+        System.out.println(jotain.getDayOfMonth());
+
+        System.out.println("Tämän kuukauden ensimmäinen viikonpäivä on: " + viikonpaiva);
+        int luku = viikonpaiva.getValue()-1;
+
+        int viimeinenPaiva = (nykyinenPaivamaara.withDayOfMonth(1).plusMonths(1).minusDays(1)).getDayOfMonth();
+
+        int parasta = 1;
 
         for (int i = 0; i < paivat; i++) {
-            DataObject paiva = new DataObject("Maanantai" , i);
-            taulukko[i] = paiva;
+            if (i < luku) {
+                LocalDate paiva = nykyinenPaivamaara.withDayOfMonth(1).minusDays(luku - i);
+                DataObjectPaiva lisattava = new DataObjectPaiva(paiva.getDayOfWeek().name() , paiva.getDayOfMonth());
+                taulukko[i] = lisattava;
+            }
+            else {
+                LocalDate paiva = nykyinenPaivamaara.withDayOfMonth(1).plusDays(i-luku);
+                DataObjectPaiva lisattava = new DataObjectPaiva(paiva.getDayOfWeek().name() , paiva.getDayOfMonth());
+                taulukko[i] = lisattava;
+            }
         }
 
         return taulukko;
@@ -34,7 +56,7 @@ public class HarjoitystyoController {
 
     @GetMapping("*")
     public String home(Model model) {
-        DataObject[] taulukko = luotaulukko();
+        DataObjectPaiva[] taulukko = luotaulukko();
         model.addAttribute("teksti",taulukko);
         return "index";
     }
